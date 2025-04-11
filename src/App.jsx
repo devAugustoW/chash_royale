@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-//import Layout from './components/Layout';
-//import Home from './pages/Home';
-//import Battles from './pages/Battles';
-//import Cards from './pages/Cards';
-//import Players from './pages/Players';
+import Layout from './components/Layout/Layout';
+import Home from './pages/Home/Home';
+import Battles from './pages/Battles/Battles';
+import Cards from './pages/Cards/Cards';
+import Players from './pages/Players/Players';
 import './App.css';
 
 function App() {
