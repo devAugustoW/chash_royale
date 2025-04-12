@@ -7,6 +7,5 @@ export const LayoutContainer = styled.div`
 
 export const Content = styled.main`
   flex: 1;
-  padding: 20px;
-  background-color: #f5f5f5;
+  background-color:rgb(15, 25, 39);
 `;
