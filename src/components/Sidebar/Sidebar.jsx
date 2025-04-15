@@ -7,9 +7,11 @@ import {
   NavItem, 
   SubMenu, 
   SubMenuItem,
-  NavToggle 
+  NavToggle,
+  FooterImage
 } from './styles';
 import logoImg from '../../assets/logo-img-clash-royale.webp';
+import footerImg from '../../assets/home-img-footer-02.png';
 
 function Sidebar() {
   const [isCardsSubmenuOpen, setIsCardsSubmenuOpen] = useState(false);
@@ -64,12 +66,47 @@ function Sidebar() {
                 10 Menos Populares
               </Link>
             </SubMenuItem>
+            <SubMenuItem>
+              <Link 
+                to="/cartas/decks" 
+                className={location.pathname === '/cartas/decks' ? 'active' : ''}
+              >
+                Decks Vencedores
+              </Link>
+            </SubMenuItem>
+						<SubMenuItem>
+              <Link 
+                to="/cartas/combos-perdedores" 
+                className={location.pathname === '/cartas/combos-perdedores' ? 'active' : ''}
+              >
+                Combos Perdedores
+              </Link>
+            </SubMenuItem>
+            <SubMenuItem>
+              <Link 
+                to="/cartas/trofeus" 
+                className={location.pathname === '/cartas/trofeus' ? 'active' : ''}
+              >
+                Cartas - Troféus
+              </Link>
+            </SubMenuItem>
+            <SubMenuItem>
+              <Link 
+                to="/cartas/combo-n-cartas" 
+                className={location.pathname === '/cartas/combo-n-cartas' ? 'active' : ''}
+              >
+                Combo de N Cartas
+              </Link>
+            </SubMenuItem>
           </SubMenu>
         </NavItem>
         <NavItem>
           <Link to="/jogadores">Jogadores</Link>
         </NavItem>
       </NavMenu>
+      <FooterImage>
+        <img src={footerImg} alt="Clash Royale Footer" />
+      </FooterImage>
     </SidebarContainer>
   );
 }

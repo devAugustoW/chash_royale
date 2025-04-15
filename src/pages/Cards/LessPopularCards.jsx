@@ -7,7 +7,6 @@ import {
   LoadingMessage,
   CardGrid,
   CardItem,
-  CardImageContainer,
   CardImage,
   ElixirCost,
   CardInfo,
@@ -83,18 +82,18 @@ function LessPopularCards() {
       <CardGrid>
         {lessPopularCards.map((card, index) => (
           <CardItem key={card.cardId}>
-            <CardImageContainer $rarity={card.rarity}>
+            <CardImage $rarity={card.rarity}>
               {card.elixirCost !== null && (
                 <ElixirCost>{card.elixirCost}</ElixirCost>
               )}
-              <CardImage 
+              <img 
                 src={card.iconUrl || 'https://cdn.royaleapi.com/static/img/cards-150/no-image.png'} 
                 alt={card.name}
                 onError={(e) => {
                   e.target.src = 'https://cdn.royaleapi.com/static/img/cards-150/no-image.png';
                 }}
               />
-            </CardImageContainer>
+            </CardImage>
             
             <CardInfo>
               <CardName>{card.name}</CardName>

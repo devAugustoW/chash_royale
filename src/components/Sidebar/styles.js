@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const SidebarContainer = styled.aside`
   width: 250px;
+	height: 100vh;
   background-color: #1e293b;
   color: white;
   padding: 20px 0;
@@ -22,6 +23,7 @@ export const NavMenu = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
+  flex: 1;
 `;
 
 export const NavItem = styled.li`
@@ -88,5 +90,18 @@ export const NavToggle = styled.div`
   .arrow {
     transition: transform 0.3s;
     transform: ${props => (props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  }
+`;
+
+export const FooterImage = styled.div`
+  width: 100%;
+	height: auto;
+  padding-bottom: 10px;
+  margin-left: -5px;
+  
+  
+  img {
+    max-width: 117%;
+    height: auto;
   }
 `;

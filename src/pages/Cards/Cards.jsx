@@ -1,222 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
 import { getCardStatsOptimized } from '../../services/cardService';
+import bannerImage from '../../assets/banner-deck.png';
 import {
-  CardsContainer,
-  Title,
+	BannerContainer,
+	Banner,
+	Title,
   Description,
+  CardsContainer,
+	CardOptionContainer,
+	CardOption,
+	OptionTitle,
+	OptionDescription,
+	StatsContainer,
+  StatsHeader,
+	StatsTitle,
+	DateRangeSelector,
+	DateInput,
+	StatsButton,
+	StatsGrid,
+	StatCard,
+	CardImage,
+	ElixirCost,
+	CardInfo,
+	CardName,
+	StatsBar,
+	WinBar,
+	LossBar,
+	StatsDetail,
+	TimeRange,
   LoadingMessage
 } from './styles';
 
-const CardOptionContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
-  margin-bottom: 40px;
-`;
-
-const CardOption = styled(Link)`
-  background-color: #2c2f3b;
-  border-radius: 12px;
-  padding: 25px;
-  text-decoration: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const OptionTitle = styled.h3`
-  font-size: 20px;
-  color: #fff;
-  margin-bottom: 10px;
-`;
-
-const OptionDescription = styled.p`
-  font-size: 16px;
-  color: #a1a3aa;
-  line-height: 1.5;
-`;
-
-const StatsContainer = styled.div`
-  margin-top: 40px;
-`;
-
-const StatsHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 15px;
-`;
-
-const StatsTitle = styled.h2`
-  font-size: 24px;
-  color: #cbccd1;
-`;
-
-const DateRangeSelector = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-const DateInput = styled.input`
-  background-color: #2c2f3b;
-  border: 1px solid #3e4251;
-  border-radius: 4px;
-  padding: 8px 12px;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
-  
-  &:focus {
-    border-color: #f3a952;
-  }
-`;
-
-const StatsButton = styled.button`
-  background-color: #f3a952;
-  color: #1e2130;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: #e59a43;
-  }
-  
-  &:disabled {
-    background-color: #5c5d65;
-    cursor: not-allowed;
-  }
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
-`;
-
-const StatCard = styled.div`
-  background-color: #2c2f3b;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  
-  &:hover {
-    transform: translateY(-5px);
-  }
-`;
-
-const CardImage = styled.div`
-  background-color: ${props => getCardRarityColor(props.$rarity)};
-  padding: 15px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  
-  img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-  }
-`;
-
-const ElixirCost = styled.div`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background-color: #9b59b6;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-`;
-
-const CardInfo = styled.div`
-  padding: 15px;
-`;
-
-const CardName = styled.h3`
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const StatsBar = styled.div`
-  height: 30px;
-  background-color: #3e4251;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 10px;
-  display: flex;
-`;
-
-const WinBar = styled.div`
-  height: 100%;
-  background-color: #4caf50;
-  width: ${props => props.$percentage || 0}%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-`;
-
-const LossBar = styled.div`
-  height: 100%;
-  background-color: #f44336;
-  width: ${props => props.$percentage || 0}%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-`;
-
-const StatsDetail = styled.div`
-  margin-top: 10px;
-  font-size: 13px;
-  color: #a1a3aa;
-  
-  span {
-    color: #cbccd1;
-    font-weight: bold;
-  }
-`;
-
-const TimeRange = styled.div`
-  margin-top: 20px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #a1a3aa;
-  
-  span {
-    color: #f3a952;
-    font-weight: bold;
-  }
-`;
 
 function getCardRarityColor(rarity) {
   switch (rarity) {
@@ -292,6 +106,10 @@ function Cards() {
 
   return (
     <CardsContainer>
+      <BannerContainer>
+        <Banner backgroundImage={bannerImage} />
+      </BannerContainer>
+      
       <Title>Cartas</Title>
       <Description>
         Curiosidades sobre as cartas do Clash Royale.
@@ -309,6 +127,20 @@ function Cards() {
           <OptionTitle>10 Cartas Menos Populares</OptionTitle>
           <OptionDescription>
             Veja quais são as 10 cartas menos utilizadas entre os 100 melhores jogadores do mundo.
+          </OptionDescription>
+        </CardOption>
+        
+        <CardOption to="/cartas/decks">
+          <OptionTitle>Decks Vencedores</OptionTitle>
+          <OptionDescription>
+            Descubra os melhores decks com altas taxas de vitória em diferentes períodos.
+          </OptionDescription>
+        </CardOption>
+
+        <CardOption to="/cartas/trofeus">
+          <OptionTitle>Cartas - Troféus</OptionTitle>
+          <OptionDescription>
+            Encontre vitórias impressionantes com cartas específicas onde o jogador estava em desvantagem de troféus.
           </OptionDescription>
         </CardOption>
       </CardOptionContainer>

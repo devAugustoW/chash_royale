@@ -1,9 +1,37 @@
 import styled from 'styled-components';
 
 export const BattlesContainer = styled.div`
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 20px;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+`;
+
+export const BannerContainer = styled.div`
+  width: 100%;
+  margin-bottom: 30px;
+  margin-top: -20px;
+  margin-left: -20px;
+  margin-right: -20px;
+  width: calc(100% + 40px);
+  height: 250px;
+  overflow: hidden;
+`;
+
+export const Banner = styled.div`
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.$backgroundImage});
+  background-repeat: repeat;
+  background-size: auto;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+`;
+
+
+export const ContentContainer = styled.div`
+  padding: 20px;
 `;
 
 export const StatsContainer = styled.div`
@@ -38,7 +66,7 @@ export const StatsCard = styled.div`
 	.detail {
 		margin-top: 10px;
 		color: #a1a3aa;
-		font-size: 14px;
+		font-size: 16px;
 	}
 `;
 
@@ -202,16 +230,16 @@ export const TabsContainer = styled.div`
 
 export const Tab = styled.button`
 	padding: 10px 20px;
-	background-color: ${props => props.active ? '#2c2f3b' : 'transparent'};
+	background-color: ${props => props.$active ? '#2c2f3b' : 'transparent'};
 	border: none;
-	color: ${props => props.active ? '#f3a952' : '#a1a3aa'};
+	color: ${props => props.$active ? '#f3a952' : '#a1a3aa'};
 	font-size: 16px;
-	font-weight: ${props => props.active ? 'bold' : 'normal'};
+	font-weight: ${props => props.$active ? 'bold' : 'normal'};
 	cursor: pointer;
-	border-bottom: 2px solid ${props => props.active ? '#f3a952' : 'transparent'};
+	border-bottom: 2px solid ${props => props.$active ? '#f3a952' : 'transparent'};
 	transition: all 0.3s ease;
 	
 	&:hover {
-		color: ${props => props.active ? '#f3a952' : '#cbccd1'};
+		color: ${props => props.$active ? '#f3a952' : '#cbccd1'};
 	}
 `;
