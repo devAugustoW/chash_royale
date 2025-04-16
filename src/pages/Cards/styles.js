@@ -366,11 +366,12 @@ export const ComboLossLeftColumn = styled.div`
 `;
 
 export const ComboLossForm = styled.form`
-  width: 100%;
+  width: 95%;
   background-color: #2c2f3b;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-left: 20px
 `;
 
 export const ComboLossImgContainer = styled.div`
@@ -378,9 +379,10 @@ export const ComboLossImgContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-left: 20px;
   
   img {
-    width: 100%;
+    width: 95%;
     height: auto;
     display: block;
     object-fit: cover;
