@@ -566,16 +566,6 @@ function ComboNCards() {
 		}
 	};
 
-	// useEffect para verificar as datas
-	useEffect(() => {
-		if (result) {
-			console.log('Datas utilizadas na busca:');
-			console.log('Data de início (original):', startDate);
-			console.log('Data de início (formatada):', formatDateForUI(startDate));
-			console.log('Data de fim (original):', endDate);
-			console.log('Data de fim (formatada):', formatDateForUI(endDate));
-		}
-	}, [result, startDate, endDate]);
 
 	return (
 		<ContainerComboNCards>
@@ -648,7 +638,6 @@ function ComboNCards() {
 										value={startDate}
 										onChange={(e) => {
 											const newDate = e.target.value;
-											console.log('Nova data de início:', newDate);
 											setStartDate(newDate);
 										}}
 									/>
@@ -669,7 +658,6 @@ function ComboNCards() {
 										value={endDate}
 										onChange={(e) => {
 											const newDate = e.target.value;
-											console.log('Nova data de fim:', newDate);
 											setEndDate(newDate);
 										}}
 									/>
