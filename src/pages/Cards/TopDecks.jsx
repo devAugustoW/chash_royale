@@ -8,7 +8,9 @@ import {
   LoadingMessage
 } from './styles';
 
-const CardsContainer = styled.div``;
+const CardsContainer = styled.div`
+
+`;
 
 const StatsHeader = styled.div`
   display: flex;
@@ -23,6 +25,7 @@ const StatsTitle = styled.h2`
   font-size: 24px;
   color: #cbccd1;
 `;
+
 
 const DateRangeSelector = styled.div`
   display: flex;
@@ -85,6 +88,17 @@ const ThresholdInput = styled.input`
   color: #fff;
   font-size: 14px;
   outline: none;
+
+	/* Remover as setas de rolagem do input number */
+  -moz-appearance: textfield;
+  appearance: textfield;
+  
+  /* Para navegadores WebKit (Chrome, Safari, etc.) */
+  &::-webkit-inner-spin-button, 
+  &::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    margin: 0;
+  }
   
   &:focus {
     border-color: #f3a952;
@@ -341,6 +355,21 @@ const ClearFilterButton = styled.button`
   }
 `;
 
+const TotalDecksInfo = styled.div`
+  background-color: #3e4251;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 10px;
+  color: #cbd5e1;
+  font-size: 18px;
+  display: inline-block;
+  
+  strong {
+    color: #f3a952;
+    font-size: 20px;
+  }
+`;
+
 // Função para determinar cor com base na raridade
 function getCardRarityColor(rarity) {
   switch (rarity) {
@@ -375,6 +404,7 @@ function TopDecks() {
   const [copiedDeck, setCopiedDeck] = useState(null);
   const [playerFilter, setPlayerFilter] = useState('');
   const [allDecks, setAllDecks] = useState([]);
+  const [totalMatchingDecks, setTotalMatchingDecks] = useState(0);
 
   useEffect(() => {
     // Definir datas padrão (últimos 30 dias)
@@ -420,6 +450,7 @@ function TopDecks() {
       setAllDecks(data.decks);
       setDecks(data.decks);
       setTimeRange(data.timeRange);
+      setTotalMatchingDecks(data.totalMatchingDecks);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -500,7 +531,14 @@ function TopDecks() {
             Mostrando {decks.length} deck{decks.length !== 1 ? 's' : ''} de <span>{formatDate(timeRange.startDate)}</span> até <span>{formatDate(timeRange.endDate)}</span> 
             com taxa de vitória acima de <span>{winrateThreshold}%</span>
             {playerFilter && <span> filtrados por "{playerFilter}"</span>}
+
           </TimeRange>
+        )}
+
+        {timeRange && !loading && !error && totalMatchingDecks > 0 && (
+          <TotalDecksInfo>
+            Total de decks encontrados: <strong>{totalMatchingDecks}</strong>
+          </TotalDecksInfo>
         )}
 
         {loading && <LoadingMessage>Carregando decks vencedores...</LoadingMessage>}
