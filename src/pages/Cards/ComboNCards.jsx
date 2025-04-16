@@ -447,16 +447,17 @@ function ComboNCards() {
 	const [error, setError] = useState(null);
 	const [battlesStats, setBattlesStats] = useState(null);
 	const [loadingStats, setLoadingStats] = useState(false);
+	const [totalMatchingCombos, setTotalMatchingCombos] = useState(0);
 
-	// Mover a definição de formatDateForDisplay para aqui, antes dos useEffects
-	// Modificar formatDateForDisplay para garantir que retorne uma string válida no formato de data
+	
+
 	const formatDateForDisplay = (dateString) => {
 		if (!dateString) return '';
 		try {
 			// Criar uma nova data a partir da string e formatá-la como YYYY-MM-DD
 			const date = new Date(dateString);
 			if (isNaN(date.getTime())) {
-				// Se a data for inválida, retornar string vazia
+	
 				return '';
 			}
 			
@@ -470,7 +471,7 @@ function ComboNCards() {
 		}
 	};
 
-	// Buscar estatísticas de batalhas para usar como placeholders nos inputs de data
+	// Buscar estatísticas de batalhas 
 	useEffect(() => {
 		const fetchBattlesStats = async () => {
 			try {
@@ -487,11 +488,10 @@ function ComboNCards() {
 		fetchBattlesStats();
 	}, []);
 	
-	// Modificar o useEffect de inicialização para primeiro verificar os dados das batalhas, se estiverem disponíveis
+
 	useEffect(() => {
-		// Inicializar datas padrão: baseado nos stats ou 30 dias atrás até hoje
 		const initializeDates = () => {
-			// Se temos estatísticas de batalhas, usar o intervalo de datas dessas batalhas
+			// statísticas de batalhas, usar o intervalo de datas dessas batalhas
 			if (battlesStats && battlesStats.dateRange) {
 				const oldestDate = formatDateForDisplay(battlesStats.dateRange.oldestBattle);
 				const newestDate = formatDateForDisplay(battlesStats.dateRange.newestBattle);
@@ -515,7 +515,7 @@ function ComboNCards() {
 		}
 	}, [battlesStats, startDate, endDate]);
 
-	// Atualizar handleSearch para usar a função de normalização
+	// Função handleSearch para validação
 	const handleSearch = async () => {
 		if (!startDate || !endDate) {
 			setError('Por favor, selecione as datas de início e fim.');
@@ -526,17 +526,19 @@ function ComboNCards() {
 			setLoading(true);
 			setError(null);
 
-			console.log('Buscando combos com os seguintes parâmetros:');
-			console.log('Número de cartas:', numCards);
-			console.log('Taxa de vitória mínima:', winrateThreshold);
-			console.log('Data de início original:', startDate);
-			console.log('Data de início formatada para UI:', formatDateForUI(startDate));
-			console.log('Data de fim original:', endDate);
-			console.log('Data de fim formatada para UI:', formatDateForUI(endDate));
-
-			// Chamar a API real
+			// Chamada da API 
 			const rawData = await getComboNCards(numCards, winrateThreshold, startDate, endDate);
-			console.log('Dados recebidos da API:', rawData);
+			
+			// Extrair totalMatchingCombos da resposta da API
+			if (rawData && rawData.result && rawData.result.totalMatchingCombos !== undefined) {
+				setTotalMatchingCombos(rawData.result.totalMatchingCombos);
+			} else {
+				// Fallback para o número de combos retornados
+				const combosArray = rawData && rawData.result && Array.isArray(rawData.result.combos) 
+					? rawData.result.combos 
+					: [];
+				setTotalMatchingCombos(combosArray.length);
+			}
 			
 			// Normalizar dados para um formato consistente
 			const normalizedData = normalizeApiResponse(rawData);
@@ -549,7 +551,6 @@ function ComboNCards() {
 
 			if (err.response) {
 				if (err.response.status === 500) {
-					// Mensagem mais específica para erro 500
 					const errorMessage = err.response.data?.error || err.response.data?.message || 'Erro interno no servidor';
 					setError(`Erro no servidor (500): ${errorMessage}. Isso pode indicar um problema com os parâmetros enviados ou com o processamento no backend.`);
 				} else if (err.response.data && (err.response.data.message || err.response.data.error)) {
@@ -565,7 +566,7 @@ function ComboNCards() {
 		}
 	};
 
-	// Adicionar um useEffect para verificar as datas quando o resultado é atualizado
+	// useEffect para verificar as datas
 	useEffect(() => {
 		if (result) {
 			console.log('Datas utilizadas na busca:');
@@ -699,11 +700,20 @@ function ComboNCards() {
 										Combos encontrados com {numCards} cartas e taxa de vitória acima de {winrateThreshold}%
 									</ResultTitle>
 									<ResultCount>
-										{Array.isArray(result) ? result.length : 0}
+										{totalMatchingCombos || (Array.isArray(result) ? result.length : 0)}
 									</ResultCount>
 									<ResultDescription>
-										Análise de combos entre {formatDateForUI(startDate)} e {formatDateForUI(endDate)}
+										{totalMatchingCombos > 0 ? 
+											`Total de ${totalMatchingCombos} combos encontrados no período` :
+											`Análise de combos entre ${formatDateForUI(startDate)} e ${formatDateForUI(endDate)}`}
 									</ResultDescription>
+
+									{/* Se totalMatchingCombos for maior que o número de resultados exibidos */}
+									{totalMatchingCombos > 0 && Array.isArray(result) && result.length < totalMatchingCombos && (
+										<div style={{ textAlign: 'center', marginTop: '10px', color: '#a1a3aa', fontSize: '14px' }}>
+											Mostrando os top {result.length} combos mais relevantes
+										</div>
+									)}
 
 									<CriteriaList>
 										<CriteriaItem>
