@@ -9,3 +9,22 @@ export const getPlayerStats = async () => {
     throw error;
   }
 };
+
+export const getPlayerByTag = async (tag) => {
+  try {
+    // Remover o # se presente
+    const formattedTag = tag.startsWith('#') ? tag.substring(1) : tag;
+    
+    // Se necessário, encodar a tag para URL
+    const encodedTag = encodeURIComponent(formattedTag);
+    
+    // Confirme a URL base e o prefixo da rota
+    const response = await api.get(`/api/players/${encodedTag}`);
+    console.log('Resposta da API:', response.data); // Adicionando um log para debug
+    
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar jogador por tag:', error);
+    throw error;
+  }
+};

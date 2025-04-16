@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getPlayerStats } from '../../services/playerService';
+import { getPlayerStats, getPlayerByTag } from '../../services/playerService';
 import { 
   CardsContainer, 
   Title, 
@@ -176,10 +176,220 @@ const PlayersTable = styled.div`
   }
 `;
 
+// Adicione os novos componentes estilizados
+const PlayerSearchContainer = styled.div`
+  background-color: #2c2f3b;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const SearchForm = styled.form`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const SearchInput = styled.input`
+  flex: 1;
+  background-color: #1f2129;
+  border: 1px solid #3e4251;
+  border-radius: 4px;
+  padding: 10px 15px;
+  color: #cbccd1;
+  font-size: 16px;
+  
+  &:focus {
+    outline: none;
+    border-color: #f3a952;
+  }
+  
+  &::placeholder {
+    color: #6c6f7e;
+  }
+`;
+
+const SearchButton = styled.button`
+  background-color: #f3a952;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  color: #1f2129;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #e59a43;
+  }
+  
+  &:disabled {
+    background-color: #6c6f7e;
+    cursor: not-allowed;
+  }
+`;
+
+const PlayerCard = styled.div`
+  background-color: #252836;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
+const PlayerHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  
+  .player-info {
+    flex: 1;
+  }
+  
+  .player-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #cbccd1;
+  }
+  
+  .player-tag {
+    font-size: 14px;
+    color: #a1a3aa;
+  }
+  
+  .player-trophies {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #f1c40f;
+    font-weight: bold;
+    font-size: 18px;
+  }
+`;
+
+const PlayerStats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+  
+  .stat-item {
+    padding: 10px;
+    background-color: #2c2f3b;
+    border-radius: 4px;
+    
+    .stat-label {
+      font-size: 12px;
+      color: #a1a3aa;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      font-size: 18px;
+      color: #cbccd1;
+      font-weight: 500;
+    }
+  }
+`;
+
+const CardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+  
+  .card-item {
+    background-color: #2c2f3b;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 8px;
+      border-radius: 8px;
+    }
+    
+    .card-name {
+      font-size: 12px;
+      color: #cbccd1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+    
+    .card-level {
+      font-size: 11px;
+      color: #8f9195;
+      margin-bottom: 4px;
+    }
+    
+    .card-elixir {
+      font-size: 11px;
+      color: #3498db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      
+      &:before {
+        content: '💧';
+        font-size: 10px;
+      }
+    }
+    
+    .card-rarity {
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      margin-top: 4px;
+      
+      &.Common { background-color: #bdc3c7; color: #2c3e50; }
+      &.Rare { background-color: #3498db; color: #fff; }
+      &.Epic { background-color: #9b59b6; color: #fff; }
+      &.Legendary { background-color: #f1c40f; color: #7f8c8d; }
+      &.Champion { background-color: #e74c3c; color: #fff; }
+    }
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: #e74c3c;
+  padding: 10px;
+  background-color: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+  margin-top: 10px;
+`;
+
 function Players() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [playerStats, setPlayerStats] = useState(null);
+  
+  // Estados para busca de jogador por tag
+  const [tagInput, setTagInput] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const [playerData, setPlayerData] = useState(null);
+  const [searchError, setSearchError] = useState(null);
   
   useEffect(() => {
     const fetchPlayerStats = async () => {
@@ -198,6 +408,54 @@ function Players() {
     fetchPlayerStats();
   }, []);
   
+  // Função para buscar jogador por tag
+  const searchPlayerByTag = async (e) => {
+    e.preventDefault();
+    
+    if (!tagInput.trim()) {
+      setSearchError('Por favor, insira uma tag de jogador válida');
+      return;
+    }
+    
+    try {
+      setIsSearching(true);
+      setSearchError(null);
+      setPlayerData(null);
+      
+      // Limpar a tag - remover espaços e caracteres especiais
+      let formattedTag = tagInput.trim();
+      
+      // Remover o # se presente no início
+      if (formattedTag.startsWith('#')) {
+        formattedTag = formattedTag.substring(1);
+      }
+      
+      console.log('Buscando jogador com tag:', formattedTag);
+      
+      const data = await getPlayerByTag(formattedTag);
+      setPlayerData(data);
+      setIsSearching(false);
+    } catch (err) {
+      console.error('Erro ao buscar jogador:', err);
+      
+      // Mensagem de erro mais detalhada
+      let errorMessage = 'Erro ao buscar jogador. Por favor, tente novamente.';
+      
+      if (err.response) {
+        if (err.response.status === 404) {
+          errorMessage = `Jogador com tag ${tagInput} não encontrado`;
+        } else if (err.response.data && err.response.data.error) {
+          errorMessage = err.response.data.error;
+        } else {
+          errorMessage = `Erro ${err.response.status}: ${err.response.statusText}`;
+        }
+      }
+      
+      setSearchError(errorMessage);
+      setIsSearching(false);
+    }
+  };
+  
   // Encontrar o valor máximo para normalizar o gráfico
   const getMaxDistributionCount = () => {
     if (!playerStats || !playerStats.trophyDistribution) return 0;
@@ -205,8 +463,11 @@ function Players() {
   };
   
   // Formatar números com separador de milhares
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat('pt-BR').format(num);
+  const formatNumber = (num, decimals = 0) => {
+    return new Intl.NumberFormat('pt-BR', { 
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals 
+    }).format(num);
   };
   
   // Formatar as faixas de troféus para exibição
@@ -331,6 +592,148 @@ function Players() {
               </tbody>
             </table>
           </PlayersTable>
+          
+          {/* Formulário de busca por tag */}
+          <SectionTitle>Buscar Jogador por Tag</SectionTitle>
+          <PlayerSearchContainer>
+            <SearchForm onSubmit={searchPlayerByTag}>
+              <SearchInput 
+                type="text"
+                placeholder="Digite a tag do jogador (ex: #2P0LYQ)"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+              />
+              <SearchButton type="submit" disabled={isSearching}>
+                {isSearching ? 'Buscando...' : 'Buscar Jogador'}
+              </SearchButton>
+            </SearchForm>
+            
+            {searchError && <ErrorMessage>{searchError}</ErrorMessage>}
+            
+            {playerData && (
+              <PlayerCard>
+                <PlayerHeader>
+                  <div className="player-info">
+                    <div className="player-name">{playerData.name}</div>
+                    <div className="player-tag">{playerData.tag}</div>
+                  </div>
+                  <div className="player-trophies">
+                    {formatNumber(playerData.trophies)} troféus
+                  </div>
+                </PlayerHeader>
+                
+                <PlayerStats>
+                  <div className="stat-item">
+                    <div className="stat-label">Nível</div>
+                    <div className="stat-value">{playerData.expLevel}</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-label">Recorde de Troféus</div>
+                    <div className="stat-value">{formatNumber(playerData.bestTrophies || playerData.trophies)}</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-label">Vitórias</div>
+                    <div className="stat-value">{formatNumber(playerData.wins)}</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-label">Derrotas</div>
+                    <div className="stat-value">{formatNumber(playerData.losses)}</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-label">Batalhas Totais</div>
+                    <div className="stat-value">{formatNumber(playerData.battleCount)}</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-label">Cartas no Deck</div>
+                    <div className="stat-value">{formatNumber(playerData.currentDeck?.length || 0)}</div>
+                  </div>
+                  <div className="stat-item">
+                    <div className="stat-label">Total de Cartas</div>
+                    <div className="stat-value">{formatNumber(playerData.cards?.length || 0)}</div>
+                  </div>
+                </PlayerStats>
+                
+                {playerData.cards && playerData.cards.length > 0 && (
+                  <>
+                    <SectionTitle>Cartas do Jogador</SectionTitle>
+                    <CardsGrid>
+                      {playerData.cards.slice(0, 16).map((card, index) => (
+                        <div className="card-item" key={index}>
+                          {card.iconUrl ? (
+                            <img 
+                              src={card.iconUrl} 
+                              alt={card.name} 
+                              className="card-image"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = 'https://via.placeholder.com/80?text=Sem+Imagem';
+                              }}
+                            />
+                          ) : (
+                            <div className="card-image-placeholder">
+                              {card.name.charAt(0)}
+                            </div>
+                          )}
+                          <div className="card-name">{card.name}</div>
+                          <div className="card-level">Nível {card.level}</div>
+                          {card.elixirCost && (
+                            <div className="card-elixir">{card.elixirCost}</div>
+                          )}
+                          {card.rarity && (
+                            <div className={`card-rarity ${card.rarity}`}>
+                              {card.rarity}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </CardsGrid>
+                    {playerData.cards.length > 16 && (
+                      <div style={{ textAlign: 'center', marginTop: '10px', color: '#a1a3aa', fontSize: '14px' }}>
+                        Mostrando 16 de {playerData.cards.length} cartas
+                      </div>
+                    )}
+                  </>
+                )}
+                
+                {playerData.supportCards && playerData.supportCards.length > 0 && (
+                  <>
+                    <SectionTitle>Cartas de Suporte</SectionTitle>
+                    <CardsGrid>
+                      {playerData.supportCards.map((card, index) => (
+                        <div className="card-item" key={index}>
+                          {card.iconUrl ? (
+                            <img 
+                              src={card.iconUrl} 
+                              alt={card.name} 
+                              className="card-image"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = 'https://via.placeholder.com/80?text=Sem+Imagem';
+                              }}
+                            />
+                          ) : (
+                            <div className="card-image-placeholder">
+                              {card.name.charAt(0)}
+                            </div>
+                          )}
+                          <div className="card-name">{card.name}</div>
+                          <div className="card-level">Nível {card.level}</div>
+                          {card.elixirCost && (
+                            <div className="card-elixir">{card.elixirCost}</div>
+                          )}
+                          {card.rarity && (
+                            <div className={`card-rarity ${card.rarity}`}>
+                              {card.rarity}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </CardsGrid>
+                  </>
+                )}
+              </PlayerCard>
+            )}
+          </PlayerSearchContainer>
         </StatsContainer>
       )}
     </CardsContainer>
