@@ -6,6 +6,7 @@ export const BattlesContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	padding: 0;
+	overflow-x: hidden;
 `;
 
 export const BannerContainer = styled.div`
@@ -25,13 +26,24 @@ export const Banner = styled.div`
   background-image: url(${props => props.$backgroundImage});
   background-repeat: repeat;
   background-size: auto;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 `;
 
-
 export const ContentContainer = styled.div`
+	width: 100%;
   padding: 20px;
+`;
+
+export const Title = styled.h1`
+	font-size: 32px;
+	color: #cbccd1;
+	margin-bottom: 10px;
+`;
+
+export const Description = styled.p`
+	font-size: 18px;
+	line-height: 1.6;
+	color: rgb(161, 163, 170);
+	margin-bottom: 30px;
 `;
 
 export const StatsContainer = styled.div`
@@ -70,93 +82,33 @@ export const StatsCard = styled.div`
 	}
 `;
 
-export const Title = styled.h1`
-	font-size: 32px;
-	color: #cbccd1;
-	margin-bottom: 10px;
-`;
-
-export const Description = styled.p`
-	font-size: 18px;
-	line-height: 1.6;
-	color: rgb(161, 163, 170);
-	margin-bottom: 30px;
-`;
-
-export const LoadingMessage = styled.div`
+export const TabsContainer = styled.div`
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 300px;
-	font-size: 20px;
-	color: #cbccd1;
+	margin-bottom: 20px;
 `;
 
-export const BattlesList = styled.div`
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-	gap: 20px;
-`;
-
-export const BattleCard = styled.div`
-	background-color: #2c2f3b;
-	border-radius: 8px;
-	padding: 16px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	transition: transform 0.2s, box-shadow 0.2s;
+export const Tab = styled.button`
+	padding: 10px 20px;
+	font-size: 16px;
+	font-weight: ${props => props.$active ? 'bold' : 'normal'};
+	color: ${props => props.$active ? '#f3a952' : '#a1a3aa'};
+	background-color: ${props => props.$active ? '#2c2f3b' : 'transparent'};
+	border-bottom: 2px solid ${props => props.$active ? '#f3a952' : 'transparent'};
+	border: none;	
+	cursor: pointer;
+	transition: all 0.3s ease;
 	
 	&:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-	}
-`;
-
-export const BattleTitle = styled.h3`
-	font-size: 18px;
-	color: #fff;
-	margin-bottom: 16px;
-	border-bottom: 1px solid #3e4251;
-	padding-bottom: 8px;
-`;
-
-export const BattleSection = styled.div`
-	margin-bottom: 16px;
-	padding: 10px;
-	background-color: #252836;
-	border-radius: 6px;
-	
-	h4 {
-		color: #cbccd1;
-		margin-bottom: 10px;
-		font-size: 16px;
-	}
-`;
-
-export const BattleDetail = styled.div`
-	margin-bottom: 8px;
-	color: #a1a3aa;
-	font-size: 14px;
-	
-	strong {
-		color: #cbccd1;
+		color: ${props => props.$active ? '#f3a952' : '#cbccd1'};
 	}
 `;
 
 export const BattleTable = styled.div`
-	width: 100%;
+	width: 99%;
 	margin-bottom: 30px;
 	border-radius: 8px;
 	overflow: hidden;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-export const BattleHeader = styled.div`
-	background-color: #1e2130;
-	padding: 12px 16px;
-	color: #f3a952;
-	font-weight: bold;
-	border-bottom: 1px solid #3e4251;
-	grid-column: 1 / -1;
 `;
 
 export const TableHeader = styled.div`
@@ -170,6 +122,15 @@ export const TableHeader = styled.div`
 	div {
 		padding: 0 10px;
 	}
+`;
+
+export const BattleHeader = styled.div`
+	background-color: #1e2130;
+	padding: 12px 16px;
+	color: #f3a952;
+	font-weight: bold;
+	border-bottom: 1px solid #3e4251;
+	grid-column: 1 / -1;
 `;
 
 export const TableRow = styled.div`
@@ -223,23 +184,12 @@ export const PlayerCrowns = styled.span`
 	font-weight: bold;
 `;
 
-export const TabsContainer = styled.div`
-	display: flex;
-	margin-bottom: 20px;
-`;
 
-export const Tab = styled.button`
-	padding: 10px 20px;
-	background-color: ${props => props.$active ? '#2c2f3b' : 'transparent'};
-	border: none;
-	color: ${props => props.$active ? '#f3a952' : '#a1a3aa'};
-	font-size: 16px;
-	font-weight: ${props => props.$active ? 'bold' : 'normal'};
-	cursor: pointer;
-	border-bottom: 2px solid ${props => props.$active ? '#f3a952' : 'transparent'};
-	transition: all 0.3s ease;
-	
-	&:hover {
-		color: ${props => props.$active ? '#f3a952' : '#cbccd1'};
-	}
+export const LoadingMessage = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 300px;
+	font-size: 20px;
+	color: #cbccd1;
 `;
