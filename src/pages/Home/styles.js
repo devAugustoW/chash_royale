@@ -16,6 +16,7 @@ export const Banner = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	position: relative;
   overflow: hidden;
+	
 
   img {
 		width: 100%;
@@ -51,7 +52,7 @@ export const Description = styled.p`
   font-size: 18px;
   line-height: 1.6;
   color: rgb(161, 163, 170);
-	margin-top: -15px;
+	margin-top: -45px;
 	margin-bottom: 20px;
 `;
 

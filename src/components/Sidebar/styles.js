@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const SidebarContainer = styled.aside`
   width: 250px;
+
   background-color: #1e293b;
   color: white;
   padding: 20px 0;
