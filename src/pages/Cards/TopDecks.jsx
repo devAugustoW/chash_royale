@@ -396,12 +396,11 @@ function formatDate(date) {
 function TopDecks() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [winrateThreshold, setWinrateThreshold] = useState(60);
+  const [winrateThreshold, setWinrateThreshold] = useState('60');
   const [decks, setDecks] = useState([]);
   const [timeRange, setTimeRange] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [copiedDeck, setCopiedDeck] = useState(null);
   const [playerFilter, setPlayerFilter] = useState('');
   const [allDecks, setAllDecks] = useState([]);
   const [totalMatchingDecks, setTotalMatchingDecks] = useState(0);
@@ -471,13 +470,11 @@ function TopDecks() {
     }
   };
 
-  const handleThresholdChange = (e) => {
-    const value = parseInt(e.target.value);
-    if (value >= 0 && value <= 100) {
-      setWinrateThreshold(value);
-    }
-  };
-
+  
+	const handleThresholdChange = (event) => {
+		setWinrateThreshold(event.target.value);
+	};
+	
 
   return (
     <CardsContainer>
