@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { getCardStatsOptimized } from '../../services/cardService';
-import bannerImage from '../../assets/banner-deck.png';
+import React, { useState } from 'react';
+import { getCardStats } from '../../services/cardService';
+import bannerImageCards from '../../assets/banner-deck.png';
 import {
 	BannerContainer,
 	Banner,
@@ -31,47 +31,45 @@ import {
   LoadingMessage
 } from './styles';
 
-
-function getCardRarityColor(rarity) {
-  switch (rarity) {
-    case 'Common':
-      return '#bdc3c7';
-    case 'Rare':
-      return '#3498db';
-    case 'Epic':
-      return '#9b59b6';
-    case 'Legendary':
-      return '#f1c40f';
-    case 'Champion':
-      return '#e74c3c';
-    default:
-      return '#95a5a6';
-  }
-}
-
 function formatDate(date) {
   if (!date) return '';
   return new Date(date).toLocaleDateString('pt-BR');
 }
 
 function Cards() {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState('2025-02-02');
+  const [endDate, setEndDate] = useState('2025-03-29');
   const [cardStats, setCardStats] = useState([]);
   const [timeRange, setTimeRange] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Definir datas padrão (últimos 30 dias)
-    const end = new Date();
-    const start = new Date();
-    start.setDate(start.getDate() - 30);
+	// ajuste da Data
+  const adjustDate = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().split('T')[0];
+  };
 
-    setEndDate(end.toISOString().split('T')[0]);
-    setStartDate(start.toISOString().split('T')[0]);
-  }, []);
+	// tratamento de erros
+	const handleError = (err) => {
+    console.error(err);
+    let errorMessage = 'Erro ao carregar estatísticas das cartas';
+    
+    if (err.response) {
+      if (err.response.status === 400) {
+        errorMessage = err.response.data?.error || 'Parâmetros de data inválidos';
+      } else {
+        errorMessage = `Erro ${err.response.status}: ${err.response.data?.error || 'Erro no servidor'}`;
+      }
+    } else if (err.request) {
+      errorMessage = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
+    }
+    
+    return errorMessage;
+  };
 
+	// busca estatísticas
   const handleFetchStats = async () => {
     if (!startDate || !endDate) {
       setError('Por favor, selecione um intervalo de datas válido.');
@@ -81,25 +79,16 @@ function Cards() {
     try {
       setLoading(true);
       setError(null);
-      const data = await getCardStatsOptimized(startDate, endDate);
+
+      const data = await getCardStats(adjustDate(startDate), adjustDate(endDate));
+
       setCardStats(data.cards);
       setTimeRange(data.timeRange);
+			
       setLoading(false);
+
     } catch (err) {
-      console.error(err);
-      let errorMessage = 'Erro ao carregar estatísticas das cartas';
-      
-      if (err.response) {
-        if (err.response.status === 400) {
-          errorMessage = err.response.data?.error || 'Parâmetros de data inválidos';
-        } else {
-          errorMessage = `Erro ${err.response.status}: ${err.response.data?.error || 'Erro no servidor'}`;
-        }
-      } else if (err.request) {
-        errorMessage = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
-      }
-      
-      setError(errorMessage);
+      setError(handleError(err));
       setLoading(false);
     }
   };
@@ -107,7 +96,7 @@ function Cards() {
   return (
     <CardsContainer>
       <BannerContainer>
-        <Banner backgroundImage={bannerImage} />
+        <Banner $backgroundImage={bannerImageCards} />
       </BannerContainer>
       
       <Title>Cartas</Title>
@@ -153,13 +142,11 @@ function Cards() {
               type="date" 
               value={startDate} 
               onChange={(e) => setStartDate(e.target.value)}
-              placeholder="Data inicial"
             />
             <DateInput 
               type="date" 
               value={endDate} 
               onChange={(e) => setEndDate(e.target.value)}
-              placeholder="Data final"
             />
             <StatsButton 
               onClick={handleFetchStats}

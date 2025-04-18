@@ -32,7 +32,7 @@ export const getCardsList = async () => {
   }
 };
 
-export const getCardStatsOptimized = async (startDate, endDate) => {
+export const getCardStats = async (startDate, endDate) => {
   try {
     const response = await api.get('/api/cards/stats', {
       params: { startDate, endDate }

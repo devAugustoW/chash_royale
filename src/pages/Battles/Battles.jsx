@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getBattlesStats, getBattleList } from '../../services/battleService';
+import bannerImage from '../../assets/banner-battles.webp';
 import { 
   BattlesContainer, 
   BannerContainer,
@@ -16,12 +17,10 @@ import {
   PlayerRank,
   PlayerResult,
   PlayerCrowns,
-  TabsContainer,
-  Tab,
   BattleHeader
 } from './styles';
 
-import bannerImage from '../../assets/banner-deck.png';
+
 
 function Battles() {
   const [battleList, setBattleList] = useState([]);

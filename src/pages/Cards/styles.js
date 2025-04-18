@@ -15,7 +15,7 @@ export const BannerContainer = styled.div`
 export const Banner = styled.div`
   width: 100%;
   height: 100%;
-  background-image: url(${props => props.backgroundImage});
+  background-image: url(${props => props.$backgroundImage});
   background-repeat: repeat;
   background-size: contain;
 	
@@ -85,9 +85,12 @@ export const StatsHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+	gap: 15px;
+	flex-wrap: wrap;
+	padding: 10px;
   margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 15px;
+	border: 3px solid red;
+	border-radius: 10px;
 `;
 
 export const StatsTitle = styled.h2`
