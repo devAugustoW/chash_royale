@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getPopularCards } from '../../services/cardService';
 import {
   CardsContainer,
+	BannerPopularContainer,
+	BannerPopular,
   Title,
   Description,
   LoadingMessage,
@@ -17,6 +19,8 @@ import {
   CardRank
 } from './styles';
 
+import bannerPopular from '../../assets/banner-popular02.webp';
+
 function PopularCards() {
   const [popularCards, setPopularCards] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,31 +30,21 @@ function PopularCards() {
     const fetchPopularCards = async () => {
       try {
         setLoading(true);
+
         const data = await getPopularCards();
         setPopularCards(data.cards);
         setLoading(false);
+
       } catch (err) {
         setError('Erro ao carregar dados das cartas');
         setLoading(false);
         console.error(err);
+
       }
     };
 
     fetchPopularCards();
   }, []);
-
-  // Função para traduzir as raridades em português
-  const translateRarity = (rarity) => {
-    const translations = {
-      'Common': 'Comum',
-      'Rare': 'Rara',
-      'Epic': 'Épica',
-      'Legendary': 'Lendária',
-      'Champion': 'Campeã'
-    };
-    
-    return translations[rarity] || rarity;
-  };
 
   if (loading) {
     return <LoadingMessage>Carregando dados das cartas...</LoadingMessage>;
@@ -62,6 +56,9 @@ function PopularCards() {
 
   return (
     <CardsContainer>
+			<BannerPopularContainer>
+				<BannerPopular $backgroundImage={bannerPopular} />
+			</BannerPopularContainer>
       <Title>Cartas Mais Populares</Title>
       <Description>
         As 10 cartas mais populares entre os 100 melhores jogadores do mundo.
@@ -84,10 +81,10 @@ function PopularCards() {
             </CardImage>
             
             <CardInfo>
-              <CardName>{card.name}</CardName>
+						<CardName>{card.name}</CardName>
               {card.rarity && (
                 <CardRarity $rarity={card.rarity}>
-                  {translateRarity(card.rarity)}
+                  {card.rarity}
                 </CardRarity>
               )}
               

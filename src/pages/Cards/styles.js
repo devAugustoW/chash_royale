@@ -18,8 +18,22 @@ export const Banner = styled.div`
   background-image: url(${props => props.$backgroundImage});
   background-repeat: repeat;
   background-size: contain;
-	
 `;
+
+export const BannerPopularContainer = styled.div`
+	width: calc(100% + 20px);
+	margin-bottom: 30px;
+	height: 330px;
+	overflow: hidden;
+`;
+
+export const BannerPopular = styled.div`
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.$backgroundImage});
+  background-size: cover;
+`;
+
 
 export const Title = styled.h1`
   font-size: 32px;
@@ -255,9 +269,6 @@ export const TimeRange = styled.div`
   }
 `;
 
-
-
-
 export const LoadingMessage = styled.div`
   display: flex;
   justify-content: center;
@@ -272,6 +283,7 @@ export const CardGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
   margin-bottom: 40px;
+	margin-left: 20px;
 `;
 
 export const CardItem = styled.div`
@@ -624,3 +636,4 @@ export const ComboCardElixir = styled.div`
     font-weight: bold;
   }
 `;
+
