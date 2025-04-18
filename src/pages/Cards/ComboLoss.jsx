@@ -45,16 +45,18 @@ function ComboLoss() {
   const [result, setResult] = useState(null);
   const [formError, setFormError] = useState('');
 
+	// Busca a lis de cartas para abastecer os selects
   useEffect(() => {
     const loadCards = async () => {
       try {
         setLoading(true);
+
         const cardsData = await getCardsList();
         setCards(cardsData || []); 
+
       } catch (err) {
         console.error('Erro ao carregar lista de cartas:', err);
         setError('Erro ao carregar lista de cartas. Usando lista alternativa.');
-        
 
       } finally {
         setLoading(false);
@@ -103,12 +105,14 @@ function ComboLoss() {
     return true;
   };
 
+	// Ajuste do retorno da Data pela API
 	const adjustDate = (dateStr) => {
 		const date = new Date(dateStr);
 		date.setDate(date.getDate() + 1); 
 		return date.toISOString().split('T')[0]; 
 	};
 
+	// Função para buscar os dados de combos perdedores
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -139,6 +143,7 @@ function ComboLoss() {
     }
   };
 
+	// Formatação da Data para exibição
   const formatDate = (dateString) => {
     if (!dateString) return 'Não especificado';
     const date = new Date(dateString);
@@ -149,11 +154,6 @@ function ComboLoss() {
     });
   };
 
-  // Apenas para exibição no componente
-  const today = new Date().toISOString().split('T')[0];
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];
 
   return (
     <CardsContainer>
@@ -187,6 +187,7 @@ function ComboLoss() {
             <ComboLossForm onSubmit={handleSubmit}>
               <FormGroup>
                 <Label htmlFor="card1Select">Primeira Carta:</Label>
+								
                 <Select 
                   id="card1Select" 
                   value={card1}
@@ -228,8 +229,6 @@ function ComboLoss() {
                   id="startDate"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  max={today}
-                  placeholder={oneMonthAgoStr}
                   required
                 />
               </FormGroup>
@@ -241,8 +240,6 @@ function ComboLoss() {
                   id="endDate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  max={today}
-                  placeholder={today}
                   required
                 />
               </FormGroup>

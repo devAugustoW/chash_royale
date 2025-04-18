@@ -99,7 +99,6 @@ export const FooterImage = styled.div`
   padding-bottom: 10px;
   margin-left: -5px;
   
-  
   img {
     max-width: 117%;
     height: auto;

@@ -26,9 +26,11 @@ export const getCardsList = async () => {
   try {
     const response = await api.get('/api/cards/all');
     return response.data.cards;
+
   } catch (error) {
     console.error('Erro ao buscar lista de cartas:', error);
     throw error;
+
   }
 };
 
@@ -60,23 +62,21 @@ export const getTopDecks = async (startDate, endDate, winrateThreshold = 0.6) =>
   }
 };
 
-export const getComboLoss = async (combo, startDate = null, endDate = null) => {
+export const getComboLoss = async (combo, startDate, endDate) => {
   try {
-    let queryParams = `combo=${encodeURIComponent(Array.isArray(combo) ? JSON.stringify(combo) : combo)}`;
+		const queryParams = {
+      combo: Array.isArray(combo) ? JSON.stringify(combo) : combo,
+      startDate,
+      endDate
+    };
     
-    if (startDate) {
-      queryParams += `&startDate=${encodeURIComponent(startDate)}`;
-    }
-    
-    if (endDate) {
-      queryParams += `&endDate=${encodeURIComponent(endDate)}`;
-    }
-    
-    const response = await api.get(`/api/cards/combo-loss?${queryParams}`);
+    const response = await api.get('/api/cards/combo-loss', { params: queryParams });
     return response.data;
+
   } catch (error) {
     console.error('Erro ao buscar dados de combos perdedores:', error);
     throw error;
+
   }
 };
 
