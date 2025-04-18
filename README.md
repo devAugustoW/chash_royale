@@ -10,6 +10,8 @@ A API utilizada para acessar o banco de dados e realizar as consultas está disp
 
 <br>
 
+![estatisticas-gerais](https://github.com/user-attachments/assets/5be5fb24-045b-4898-80ba-df308c4f7ed9)
+
 
 <br>
 
@@ -56,3 +58,5 @@ A API utilizada para acessar o banco de dados e realizar as consultas está disp
 ## Estatísticas um Jogador
 
 <br>
+
+![estatisticas-jogador](https://github.com/user-attachments/assets/e063fd2a-e8ff-406e-8041-73c2f4d69438)
