@@ -1,12 +1,19 @@
-# Clash Royale Frontend - Análise de Dados de Partidas
+# Clash Royale Frontend - Análise de Dados das Partidas
 
 ![banner-clash](https://github.com/user-attachments/assets/f1a65eca-29d4-434d-b7c7-1fb1de67eb5f)
 
-Este projeto frontend, desenvolvido em React, consome uma API para realizar análises sobre dados de partidas do jogo Clash Royale, armazenados em um banco de dados MongoDB. O objetivo principal deste projeto é responder a cinco perguntas analíticas propostas para a disciplina de Banco de Dados, demonstrando a capacidade de consultar e apresentar informações relevantes a partir dos dados disponíveis.
+Este projeto frontend, desenvolvido em React, consome API que realiza consultas e análises estatísticas das batalhas dos 100 melhores jogadores da temporada de Fevereiro a Março. Atravéz da API do Clash Royale extraimos diversos tipos de dados, salvamos estes dados em sua forma bruta em um Data Lake, manipulamos, tratamos, limpamos e reorganizamos os dados em um novo Banco de Dados inserido no MongoDB.
 
 A API utilizada para acessar o banco de dados e realizar as consultas está disponível no seguinte repositório: https://github.com/devAugustoW/api_clash_royale/tree/main
 
-## Pergunta 1: Cálculo da porcentagem de vitórias e derrotas utilizando uma carta específica em um intervalo de tempo.
+## Estatísticas gerais das Batalhas
+
+<br>
+
+
+<br>
+
+## Porcentagem de vitórias e Derrotas por carta
 
 <br>
 
@@ -14,7 +21,7 @@ A API utilizada para acessar o banco de dados e realizar as consultas está disp
 
 <br>
 
-## Pergunta 2: Liste os decks completos que produziram mais de X% (parâmetro) de vitórias ocorridas em um intervalo de timestamps (parâmetro).
+## Relação de Decks com alta taxa de vitórias
 
 <br>
 
@@ -22,7 +29,7 @@ A API utilizada para acessar o banco de dados e realizar as consultas está disp
 
 <br>
 
-## Pergunta 3: Calcule a quantidade de derrotas utilizando o combo de cartas(X1,X2, ...) (parâmetro) ocorridas em um intervalo de timestamps (parâmetro).
+## Escolha duas cartas e veja quantas vezes este combo perdeu na temporada
 
 <br>
 
@@ -30,12 +37,22 @@ A API utilizada para acessar o banco de dados e realizar as consultas está disp
 
 <br>
 
-## Pergunta 4: Calcule a quantidade de vitórias envolvendo a carta X (parâmetro) nos  casos em que o vencedor possui Z% (parâmetro) menos troféus do que  o perdedor, a partida durou menos de 2 minutos, e o perdedor  derrubou ao menos duas torres do adversário.
+## Veja a quantidade de vitórias uma carta obteve em condições desafiadoras
 
 <br>
 
 ![pergunta-4](https://github.com/user-attachments/assets/8624c83f-61d7-411b-b461-0997dfa25909)
 
-## Pergunta 5: Liste o combo de cartas (eg: carta 1, carta 2, carta 3... carta n) de  tamanho N (parâmetro) que produziram mais de Y% (parâmetro) de  vitórias ocorridas em um intervalo de Timestamps (parâmetro).
+<br>
+
+## Veja os combos de cartas que mais produziram vitórias
+
+<br>
 
 ![Pergunta-5](https://github.com/user-attachments/assets/c54564bc-f155-46fc-bd50-31bd21ea4779)
+
+<br>
+
+## Estatísticas um Jogador
+
+<br>
