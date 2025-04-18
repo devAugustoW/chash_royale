@@ -8,30 +8,36 @@ import {
 	LoadingMessage,
 } from './styles';
 
+import bannerClash from '../../assets/banner-clash-royale.webp'
+
 const ContainerCardsTrophies = styled.div`
-	padding-left: 20px;
-	padding-top: 10px
+	width: auto;
+	height: 100%;
+	overflow: hidden;
 `; 
-// Componentes estilizados
-const StatsContainer = styled.div`
-  margin-top: 40px;
-`;
 
-const StatsTitle = styled.h2`
-  font-size: 24px;
-  color: #cbccd1;
-  margin-bottom: 5px;
-`;
-
-const StatsSubtitle = styled.p`
-  font-size: 14px;
-  color: #a1a3aa;
-  max-width: 500px;
+const BannerCardsTrophiesContainer = styled.div`
+	width: 100%;
+  height: 330px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	position: relative;
+  overflow: hidden;
+	
+  img {
+		width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    object-fit: cover;
+    object-position: center bottom;
+  }
 `;
 
 const ConditionsList = styled.ul`
   list-style-type: none;
-  padding-left: 0;
+  padding-left: 20px;
   margin-top: -15px;
   margin-bottom: 20px;
   
@@ -49,6 +55,26 @@ const ConditionsList = styled.ul`
     }
   }
 `;
+
+const StatsContainer = styled.div`
+  margin-top: 40px;
+	padding-left: 20px;
+	padding-right: 20px;
+`;
+
+const StatsTitle = styled.h2`
+  font-size: 24px;
+  color: #cbccd1;
+  margin-bottom: 5px;
+`;
+
+const StatsSubtitle = styled.p`
+  font-size: 14px;
+  color: #a1a3aa;
+  max-width: 500px;
+`;
+
+
 
 // Layout de duas colunas
 const ContentWrapper = styled.div`
@@ -214,41 +240,6 @@ const ResultCount = styled.div`
   margin: 10px 0;
 `;
 
-const ResultDescription = styled.p`
-  font-size: 16px;
-  color: #a1a3aa;
-  line-height: 1.5;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-// Componente para os critérios na tela de resultados
-const CriteriaList = styled.div`
-  background-color: #252836;
-  border-radius: 8px;
-  padding: 15px;
-  margin-top: 20px;
-`;
-
-const CriteriaItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #cbccd1;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-  
-  &:before {
-    content: "✓";
-    color: #4caf50;
-    font-weight: bold;
-  }
-`;
-
 // Componente para inputs numéricos
 const NumberInputContainer = styled.div`
   display: flex;
@@ -370,7 +361,6 @@ const Tooltip = styled.div`
     visibility: visible;
   }
 `;
-
 
 const CardDetails = styled.div`
   display: flex;
@@ -505,12 +495,16 @@ function CardTrophies() {
 		const fetchCards = async () => {
 			try {
 				setLoadingCards(true);
+
 				const cardsData = await getCardsList();
+
 				setCards(cardsData);
 				setLoadingCards(false);
+
 			} catch (err) {
 				console.error('Erro ao carregar lista de cartas:', err);
 				setLoadingCards(false);
+
 			}
 		};
 
@@ -568,7 +562,7 @@ function CardTrophies() {
 			if (err.response) {
 				if (err.response.status === 500) {
 					setError(`Erro no servidor: ${err.response.data?.error || err.response.data?.message || 'Erro interno no servidor'}. 
-                    Verifique se o servidor pode estar temporariamente indisponível.`);
+						Verifique se o servidor pode estar temporariamente indisponível.`);
 				} else if (err.response.data && (err.response.data.message || err.response.data.error)) {
 					setError(`Erro: ${err.response.data.message || err.response.data.error}`);
 				} else {
@@ -584,6 +578,10 @@ function CardTrophies() {
 
 	return (
 		<ContainerCardsTrophies>
+			<BannerCardsTrophiesContainer>
+			  <img src={bannerClash} alt="Clash Royale Banner" />
+			</BannerCardsTrophiesContainer>
+
 			<CardsContainer>
 				<Title>Cartas - Troféus</Title>
 				<Description>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getCardsList, getComboNCards } from '../../services/cardService';
+import { getComboNCards } from '../../services/cardService';
 import { getBattlesStats } from '../../services/battleService';
 import {
 	CardsContainer,
@@ -9,7 +9,29 @@ import {
 	LoadingMessage,
 } from './styles';
 
+import bannerComboNCards from '../../assets/benner-combo-n-cards.jpg'
+
 const ContainerComboNCards = styled.div``;
+
+const BannerComboNCardsContainer = styled.div`
+width: 100%;
+height: 300px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+position: relative;
+overflow: hidden;
+margin-bottom: 30px;
+
+img {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	display: block;
+	object-fit: cover;
+	object-position: center bottom;
+}
+`;
 
 // Componentes estilizados
 const StatsContainer = styled.div`
@@ -408,8 +430,7 @@ const formatDateForUI = (dateString) => {
 	}
 	
 	try {
-		// Para outros formatos, tenta converter usando Date, mas com ajuste para evitar problemas de timezone
-		// Cria uma string no formato YYYY-MM-DDT12:00:00Z para garantir que o dia não mude
+
 		let date;
 		
 		if (typeof dateString === 'string' && dateString.includes('T')) {
@@ -440,8 +461,8 @@ const formatDateForUI = (dateString) => {
 function ComboNCards() {
 	const [numCards, setNumCards] = useState(3);
 	const [winrateThreshold, setWinrateThreshold] = useState(60);
-	const [startDate, setStartDate] = useState('');
-	const [endDate, setEndDate] = useState('');
+	const [startDate, setStartDate] = useState('2025-02-02');
+	const [endDate, setEndDate] = useState('2025-03-29');
 	const [result, setResult] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
@@ -449,26 +470,10 @@ function ComboNCards() {
 	const [loadingStats, setLoadingStats] = useState(false);
 	const [totalMatchingCombos, setTotalMatchingCombos] = useState(0);
 
-	
-
-	const formatDateForDisplay = (dateString) => {
-		if (!dateString) return '';
-		try {
-			// Criar uma nova data a partir da string e formatá-la como YYYY-MM-DD
-			const date = new Date(dateString);
-			if (isNaN(date.getTime())) {
-	
-				return '';
-			}
-			
-			const year = date.getFullYear();
-			const month = String(date.getMonth() + 1).padStart(2, '0');
-			const day = String(date.getDate()).padStart(2, '0');
-			return `${year}-${month}-${day}`;
-		} catch (error) {
-			console.error('Erro ao formatar data:', error);
-			return '';
-		}
+	const adjustDate = (dateStr) => {
+		const date = new Date(dateStr);
+		date.setDate(date.getDate() + 1); // Adiciona um dia
+		return date.toISOString().split('T')[0]; // Retorna no formato YYYY-MM-DD
 	};
 
 	// Buscar estatísticas de batalhas 
@@ -493,8 +498,8 @@ function ComboNCards() {
 		const initializeDates = () => {
 			// statísticas de batalhas, usar o intervalo de datas dessas batalhas
 			if (battlesStats && battlesStats.dateRange) {
-				const oldestDate = formatDateForDisplay(battlesStats.dateRange.oldestBattle);
-				const newestDate = formatDateForDisplay(battlesStats.dateRange.newestBattle);
+				const oldestDate = formatDateForUI(battlesStats.dateRange.oldestBattle);
+				const newestDate = formatDateForUI(battlesStats.dateRange.newestBattle);
 				
 				setStartDate(oldestDate);
 				setEndDate(newestDate);
@@ -526,8 +531,13 @@ function ComboNCards() {
 			setLoading(true);
 			setError(null);
 
-			// Chamada da API 
-			const rawData = await getComboNCards(numCards, winrateThreshold, startDate, endDate);
+			// Usar adjustDate para corrigir a discrepância de datas
+			const rawData = await getComboNCards(
+				numCards, 
+				winrateThreshold, 
+				adjustDate(startDate), 
+				adjustDate(endDate)
+			);
 			
 			// Extrair totalMatchingCombos da resposta da API
 			if (rawData && rawData.result && rawData.result.totalMatchingCombos !== undefined) {
@@ -569,6 +579,9 @@ function ComboNCards() {
 
 	return (
 		<ContainerComboNCards>
+			<BannerComboNCardsContainer>
+				<img src={bannerComboNCards} alt="Banner Combo de N Cartas" />
+			</BannerComboNCardsContainer>
 			<CardsContainer>
 				<Title>Combo de N Cartas</Title>
 				<Description>

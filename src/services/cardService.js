@@ -85,6 +85,7 @@ export const getVictoriesWithLessCrowns = async (cardId, trophyDisadvantage, max
     // Converter os minutos para segundos para a API
     const matchDurationInSeconds = maxBattleDuration * 60;
     
+		// Formatação de parâmetros para a API
     const queryParams = {
       cardId,
       trophyPercentage: trophyDisadvantage,
@@ -92,13 +93,14 @@ export const getVictoriesWithLessCrowns = async (cardId, trophyDisadvantage, max
       towersDestroyed: opponentCrowns
     };
     
-    console.log('Enviando requisição com parâmetros:', queryParams);
-    
     const response = await api.get('/api/cards/victories-with-less', { params: queryParams });
+
     return response.data;
+
   } catch (error) {
     console.error('Erro ao buscar vitórias com carta específica:', error);
     throw error;
+
   }
 };
 
@@ -111,14 +113,14 @@ export const getComboNCards = async (numCards, winrateThreshold, startDate, endD
       startDate,
       endDate
     };
-    
-    console.log('Enviando requisição para buscar combos de cartas:', queryParams);
-    
-    // Usando string template literals para garantir que a URL esteja correta
+ 
     const response = await api.get(`/api/cards/winning-combo`, { params: queryParams });
+
     return response.data;
+
   } catch (error) {
     console.error('Erro ao buscar combos de cartas:', error);
     throw error;
+
   }
 };

@@ -10,13 +10,9 @@ export const BattlesContainer = styled.div`
 `;
 
 export const BannerContainer = styled.div`
-  width: 100%;
-  margin-bottom: 30px;
-  margin-top: -20px;
-  margin-left: -20px;
-  margin-right: -20px;
   width: calc(100% + 40px);
-  height: 250px;
+	height: 250px;
+  margin-bottom: 30px;  
   overflow: hidden;
 `;
 

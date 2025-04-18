@@ -7,8 +7,8 @@ export const CardsContainer = styled.div`
 
 export const BannerContainer = styled.div`
   width: calc(100% + 20px);
-  margin-bottom: 30px;
-  height: 330px;
+  height: 250px;
+	margin-bottom: 30px;
   overflow: hidden;
 `;
 

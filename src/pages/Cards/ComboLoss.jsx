@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { getComboLoss } from '../../services/cardService';
-import { getCardsList } from '../../services/cardService';
+import { getComboLoss, getCardsList } from '../../services/cardService';
 import comboLossImage from '../../assets/combo-loss-img.jpg';
 import {
   CardsContainer,
+	BannerContainer,
+	Banner,
   Title,
   Description,
   LoadingMessage,
@@ -31,14 +32,16 @@ import {
   ComboLossLeftColumn
 } from './styles';
 
+import bannerBattles from '../../assets/banner-battles.webp';
+
 function ComboLoss() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cards, setCards] = useState([]);
   const [card1, setCard1] = useState('');
   const [card2, setCard2] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState('2025-02-02');
+  const [endDate, setEndDate] = useState('2025-03-29');
   const [result, setResult] = useState(null);
   const [formError, setFormError] = useState('');
 
@@ -47,24 +50,12 @@ function ComboLoss() {
       try {
         setLoading(true);
         const cardsData = await getCardsList();
-        setCards(cardsData || []); // Se cardsData for undefined, usa array vazio
+        setCards(cardsData || []); 
       } catch (err) {
         console.error('Erro ao carregar lista de cartas:', err);
         setError('Erro ao carregar lista de cartas. Usando lista alternativa.');
         
-        // Lista de fallback com algumas cartas comuns caso a API falhe
-        setCards([
-          { id: 'card1', name: 'Gigante' },
-          { id: 'card2', name: 'Bola de Fogo' },
-          { id: 'card3', name: 'Valquíria' },
-          { id: 'card4', name: 'Bruxa' },
-          { id: 'card5', name: 'Mosqueteira' },
-          { id: 'card6', name: 'Goblins' },
-          { id: 'card7', name: 'Príncipe' },
-          { id: 'card8', name: 'Baby Dragon' },
-          { id: 'card9', name: 'Lenhador' },
-          { id: 'card10', name: 'Cavaleiro' }
-        ]);
+
       } finally {
         setLoading(false);
       }
@@ -73,6 +64,7 @@ function ComboLoss() {
     loadCards();
   }, []);
 
+	// Validação do formulário
   const validateForm = () => {
     if (!card1) {
       setFormError('Selecione a primeira carta');
@@ -111,6 +103,12 @@ function ComboLoss() {
     return true;
   };
 
+	const adjustDate = (dateStr) => {
+		const date = new Date(dateStr);
+		date.setDate(date.getDate() + 1); 
+		return date.toISOString().split('T')[0]; 
+	};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -121,14 +119,23 @@ function ComboLoss() {
     try {
       setLoading(true);
       setError(null);
+
       const combo = [card1, card2];
-      const data = await getComboLoss(combo, startDate, endDate);
+      const data = await getComboLoss(
+				combo, 
+				adjustDate(startDate), 
+				adjustDate(endDate)
+			);
+
       setResult(data);
+
     } catch (err) {
       setError('Erro ao buscar dados de combos perdedores');
       console.error(err);
+
     } finally {
       setLoading(false);
+
     }
   };
 
@@ -150,6 +157,9 @@ function ComboLoss() {
 
   return (
     <CardsContainer>
+			<BannerContainer>
+				<Banner $backgroundImage={bannerBattles} />
+			</BannerContainer>
       <Title>Combos Perdedores</Title>
       <Description>
         Analise o número de derrotas com uma combinação específica de duas cartas.
