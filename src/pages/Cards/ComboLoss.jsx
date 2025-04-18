@@ -45,7 +45,7 @@ function ComboLoss() {
   const [result, setResult] = useState(null);
   const [formError, setFormError] = useState('');
 
-	// Busca a lis de cartas para abastecer os selects
+	// Buscar lista de cartas para os Selects
   useEffect(() => {
     const loadCards = async () => {
       try {

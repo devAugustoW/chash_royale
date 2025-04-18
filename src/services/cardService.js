@@ -80,7 +80,7 @@ export const getComboLoss = async (combo, startDate, endDate) => {
   }
 };
 
-export const getVictoriesWithLessCrowns = async (cardId, trophyDisadvantage, maxBattleDuration, opponentCrowns) => {
+export const getVictoriesWithLessCrowns = async (cardId, trophyDisadvantage, maxBattleDuration, opponentTower) => {
   try {
     // Converter os minutos para segundos para a API
     const matchDurationInSeconds = maxBattleDuration * 60;
@@ -90,7 +90,7 @@ export const getVictoriesWithLessCrowns = async (cardId, trophyDisadvantage, max
       cardId,
       trophyPercentage: trophyDisadvantage,
       matchDuration: matchDurationInSeconds,
-      towersDestroyed: opponentCrowns
+      towersDestroyed: opponentTower
     };
     
     const response = await api.get('/api/cards/victories-with-less', { params: queryParams });
