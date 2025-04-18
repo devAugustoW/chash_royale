@@ -97,10 +97,10 @@ export const BarChart = styled.div`
 
 export const Bar = styled.div`
   flex: 1;
+	height: ${props => props.height}%;
+	min-height: 1px;
   background-color: #f3a952;
   position: relative;
-  height: ${props => props.height}%;
-  min-height: 1px;
   border-radius: 3px 3px 0 0;
   
   &:hover {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPlayerStats, getPlayerByTag } from '../../services/playerService';
+import { getPlayersStats, getPlayerByTag } from '../../services/playerService';
 import { BannerPlayersContainer } from './styles';
 import { 
   Title, 
@@ -40,11 +40,12 @@ function Players() {
   const [playerData, setPlayerData] = useState(null);
   const [searchError, setSearchError] = useState(null);
   
+	// Carrega as Estatísticas dos Jogadores
   useEffect(() => {
-    const fetchPlayerStats = async () => {
+    const fetchPlayersStats = async () => {
       try {
         setLoading(true);
-        const data = await getPlayerStats();
+        const data = await getPlayersStats();
 
         setPlayerStats(data);
         setLoading(false);
@@ -57,8 +58,25 @@ function Players() {
       }
     };
     
-    fetchPlayerStats();
+    fetchPlayersStats();
   }, []);
+
+	// Função para tratar erro de searchPlayerByTag
+	const errorSearchPlayerByTag = (err, tag) => {
+		let errorMessage = 'Erro ao buscar jogador. Por favor, tente novamente.';
+  
+  	if (err.response) {
+			if (err.response.status === 404) {
+				errorMessage = `Jogador com tag ${tag} não encontrado`;
+			} else if (err.response.data && err.response.data.error) {
+				errorMessage = err.response.data.error;
+			} else {
+				errorMessage = `Erro ${err.response.status}: ${err.response.statusText}`;
+			}
+  	}
+  
+  	return errorMessage;
+	}
   
   // Função para buscar jogador por tag
   const searchPlayerByTag = async (e) => {
@@ -82,29 +100,14 @@ function Players() {
         formattedTag = formattedTag.substring(1);
       }
       
-      console.log('Buscando jogador com tag:', formattedTag);
-      
       const data = await getPlayerByTag(formattedTag);
       setPlayerData(data);
       setIsSearching(false);
+
     } catch (err) {
       console.error('Erro ao buscar jogador:', err);
-      
-      // Mensagem de erro mais detalhada
-      let errorMessage = 'Erro ao buscar jogador. Por favor, tente novamente.';
-      
-      if (err.response) {
-        if (err.response.status === 404) {
-          errorMessage = `Jogador com tag ${tagInput} não encontrado`;
-        } else if (err.response.data && err.response.data.error) {
-          errorMessage = err.response.data.error;
-        } else {
-          errorMessage = `Erro ${err.response.status}: ${err.response.statusText}`;
-        }
-      }
-      
-      setSearchError(errorMessage);
-      setIsSearching(false);
+  		setSearchError(errorSearchPlayerByTag(err, tagInput));
+  		setIsSearching(false);
     }
   };
   
@@ -114,7 +117,7 @@ function Players() {
     return Math.max(...playerStats.trophyDistribution.map(item => item.count));
   };
   
-  // Formatar números com separador de milhares
+  // Função para formatar números com separador de milhares
   const formatNumber = (num, decimals = 0) => {
     return new Intl.NumberFormat('pt-BR', { 
       minimumFractionDigits: decimals,
@@ -122,7 +125,7 @@ function Players() {
     }).format(num);
   };
   
-  // Formatar as faixas de troféus para exibição
+  // Formatar as faixas de troféus do gráfico
   const formatTrophyRange = (min, max) => {
     if (max === "10000+") return `${formatNumber(min)}+`;
     return `${formatNumber(min)}-${formatNumber(max)}`;
@@ -187,7 +190,7 @@ function Players() {
             <BarChart>
               {playerStats.trophyDistribution.map((range, index) => {
                 const maxCount = getMaxDistributionCount();
-                const heightPercentage = (range.count / maxCount) * 90; // 90% da altura máxima
+                const heightPercentage = (range.count / maxCount) * 90; 
                 const minValue = range._id === "10000+" ? 10000 : range._id;
                 const maxValue = range._id === "10000+" ? "10000+" : 
                   (index < playerStats.trophyDistribution.length - 1 ? 
