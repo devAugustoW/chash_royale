@@ -22,12 +22,27 @@ export const Banner = styled.div`
 
 export const BannerPopularContainer = styled.div`
 	width: calc(100% + 20px);
-	margin-bottom: 30px;
 	height: 330px;
+	margin-bottom: 30px;
 	overflow: hidden;
 `;
 
 export const BannerPopular = styled.div`
+  width: 100%;
+  height: 100%;
+  background-image: url(${props => props.$backgroundImage});
+  background-size: cover;
+`;
+
+export const BannerLessPopularContainer = styled.div`
+	width: calc(100% + 20px);
+	height: 210px;
+	margin-bottom: 30px;
+	
+	overflow: hidden;
+`;
+
+export const BannerLessPopular = styled.div`
   width: 100%;
   height: 100%;
   background-image: url(${props => props.$backgroundImage});

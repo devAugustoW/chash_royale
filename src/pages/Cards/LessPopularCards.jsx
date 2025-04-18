@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getLessPopularCards } from '../../services/cardService';
 import {
   CardsContainer,
+	BannerLessPopularContainer,
+	BannerLessPopular,
   Title,
   Description,
   LoadingMessage,
@@ -16,6 +18,8 @@ import {
   CardUsage,
   CardRank
 } from './styles';
+
+import bannerLessPopular from '../../assets/banner-loss-popular.jpg';
 
 function LessPopularCards() {
   const [lessPopularCards, setLessPopularCards] = useState([]);
@@ -74,6 +78,9 @@ function LessPopularCards() {
 
   return (
     <CardsContainer>
+			<BannerLessPopularContainer>
+				<BannerLessPopular $backgroundImage={bannerLessPopular} />
+			</BannerLessPopularContainer>
       <Title>Cartas Menos Populares</Title>
       <Description>
         As 10 cartas menos populares entre os 100 melhores jogadores do mundo.

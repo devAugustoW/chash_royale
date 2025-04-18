@@ -2,14 +2,28 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { getTopDecks } from '../../services/cardService';
 import {
+	CardsContainer,
   Title,
   Description,
 	StatsContainer,
   LoadingMessage
 } from './styles';
 
-const CardsContainer = styled.div`
+import bannerTopDecks from '../../assets/benner-top-decks.webp';
 
+
+const BannerTopDecksContainer = styled.div`
+	width: calc(100% + 20px);
+	margin-bottom: 30px;
+	height: 330px;
+	overflow: hidden;
+`;
+
+const BannerTopDecks = styled.div`
+	width: 100%;
+	height: 100%;
+	background-image: url(${props => props.$backgroundImage});
+	background-size: cover;
 `;
 
 const StatsHeader = styled.div`
@@ -25,7 +39,6 @@ const StatsTitle = styled.h2`
   font-size: 24px;
   color: #cbccd1;
 `;
-
 
 const DateRangeSelector = styled.div`
   display: flex;
@@ -166,37 +179,6 @@ const PlayerTag = styled.span`
   margin-right: 8px;
 `;
 
-const PlayerName = styled.span`
-  color: #cbd5e1;
-  font-weight: bold;
-`;
-
-const TrophyBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  margin-left: 10px;
-  color: #f1c40f;
-  font-size: 13px;
-  
-  &::before {
-    content: "🏆";
-    margin-right: 3px;
-  }
-`;
-
-const LevelBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  margin-left: 10px;
-  color: #3498db;
-  font-size: 13px;
-  
-  &::before {
-    content: "📊";
-    margin-right: 3px;
-  }
-`;
-
 const WinRate = styled.div`
   background-color: #4caf50;
   color: white;
@@ -228,7 +210,7 @@ const CardImageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${props => getCardRarityColor(props.$rarity)};
+  background-color: #3e4251;
   position: relative;
   padding: 5px;
 `;
@@ -279,82 +261,6 @@ const TimeRange = styled.div`
   }
 `;
 
-const DeckActions = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 15px;
-`;
-
-const CopyButton = styled.button`
-  background-color: #3e4251;
-  border: none;
-  border-radius: 4px;
-  color: #cbd5e1;
-  padding: 8px 12px;
-  font-size: 13px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: #4b546b;
-  }
-  
-  &::before {
-    content: "📋";
-    margin-right: 5px;
-  }
-`;
-
-const CopySuccess = styled.span`
-  color: #4caf50;
-  font-size: 13px;
-  margin-right: 10px;
-`;
-
-const FilterSelector = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-`;
-
-const FilterLabel = styled.label`
-  color: #cbccd1;
-  font-size: 14px;
-`;
-
-const FilterInput = styled.input`
-  background-color: #2c2f3b;
-  border: 1px solid #3e4251;
-  border-radius: 4px;
-  padding: 8px 12px;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
-  width: 200px;
-  
-  &:focus {
-    border-color: #f3a952;
-  }
-`;
-
-const ClearFilterButton = styled.button`
-  background-color: #3e4251;
-  border: none;
-  border-radius: 4px;
-  color: #cbd5e1;
-  padding: 6px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: #4b546b;
-  }
-`;
-
 const TotalDecksInfo = styled.div`
   background-color: #3e4251;
   border-radius: 6px;
@@ -370,69 +276,28 @@ const TotalDecksInfo = styled.div`
   }
 `;
 
-// Função para determinar cor com base na raridade
-function getCardRarityColor(rarity) {
-  switch (rarity) {
-    case 'Common':
-      return '#bdc3c7';
-    case 'Rare':
-      return '#3498db';
-    case 'Epic':
-      return '#9b59b6';
-    case 'Legendary':
-      return '#f1c40f';
-    case 'Champion':
-      return '#e74c3c';
-    default:
-      return '#95a5a6';
-  }
-}
-
 function formatDate(date) {
   if (!date) return '';
   return new Date(date).toLocaleDateString('pt-BR');
 }
 
 function TopDecks() {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState('2025-02-02');
+  const [endDate, setEndDate] = useState('2025-03-29');
   const [winrateThreshold, setWinrateThreshold] = useState('60');
   const [decks, setDecks] = useState([]);
   const [timeRange, setTimeRange] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [playerFilter, setPlayerFilter] = useState('');
-  const [allDecks, setAllDecks] = useState([]);
   const [totalMatchingDecks, setTotalMatchingDecks] = useState(0);
 
-  useEffect(() => {
-    // Definir datas padrão (últimos 30 dias)
-    const end = new Date();
-    const start = new Date();
-    start.setDate(start.getDate() - 30);
-
-    setEndDate(end.toISOString().split('T')[0]);
-    setStartDate(start.toISOString().split('T')[0]);
-  }, []);
-
-  // Filtrar decks quando playerFilter ou allDecks mudam
-  useEffect(() => {
-    if (allDecks.length === 0) return;
-    
-    if (!playerFilter) {
-      setDecks(allDecks);
-      return;
-    }
-
-    const filteredDecks = allDecks.filter(deck => {
-      const playerTag = deck.player?.tag?.toLowerCase() || '';
-      const filter = playerFilter.toLowerCase();
-      
-      return playerTag.includes(filter);
-    });
-    
-    setDecks(filteredDecks);
-  }, [playerFilter, allDecks]);
+	
+	// Função para ajutar a data
+	const adjustDate = (dateStr) => {
+		const date = new Date(dateStr);
+		date.setDate(date.getDate() + 1); 
+		return date.toISOString().split('T')[0]; 
+	};
 
   const handleFetchDecks = async () => {
     if (!startDate || !endDate) {
@@ -443,14 +308,20 @@ function TopDecks() {
     try {
       setLoading(true);
       setError(null);
-      setPlayerFilter('');
+      
       const threshold = winrateThreshold / 100;
-      const data = await getTopDecks(startDate, endDate, threshold);
-      setAllDecks(data.decks);
+      
+      const data = await getTopDecks(
+        adjustDate(startDate), 
+        adjustDate(endDate), 
+        threshold
+      );
+      
       setDecks(data.decks);
       setTimeRange(data.timeRange);
       setTotalMatchingDecks(data.totalMatchingDecks);
       setLoading(false);
+
     } catch (err) {
       console.error(err);
       let errorMessage = 'Erro ao carregar decks vencedores';
@@ -475,9 +346,11 @@ function TopDecks() {
 		setWinrateThreshold(event.target.value);
 	};
 	
-
   return (
     <CardsContainer>
+			<BannerTopDecksContainer>
+				<BannerTopDecks $backgroundImage={bannerTopDecks} />
+			</BannerTopDecksContainer>
       <Title>Decks Vencedores</Title>
       <Description>
         Descubra os melhores decks com altas taxas de vitória em diferentes períodos.
@@ -525,10 +398,7 @@ function TopDecks() {
 
         {timeRange && !loading && !error && (
           <TimeRange>
-            Mostrando {decks.length} deck{decks.length !== 1 ? 's' : ''} de <span>{formatDate(timeRange.startDate)}</span> até <span>{formatDate(timeRange.endDate)}</span> 
-            com taxa de vitória acima de <span>{winrateThreshold}%</span>
-            {playerFilter && <span> filtrados por "{playerFilter}"</span>}
-
+            Mostrando {decks.length} deck{decks.length !== 1 ? 's' : ''} de <span>{formatDate(timeRange.startDate)}</span> até <span>{formatDate(timeRange.endDate)}</span> com taxa de vitória acima de <span>{winrateThreshold}%</span>
           </TimeRange>
         )}
 
@@ -565,7 +435,7 @@ function TopDecks() {
                 <CardsGrid>
                   {deck.cards.map((card) => (
                     <CardItem key={card.id}>
-                      <CardImageWrapper $rarity={card.rarity}>
+                      <CardImageWrapper>
                         {card.elixirCost !== null && (
                           <ElixirCost>{card.elixirCost}</ElixirCost>
                         )}
