@@ -43,16 +43,15 @@ export const Content = styled.div`
 `;
 
 export const Title = styled.h1`
+	heigth: 39px
   font-size: 32px;
   color: #cbccd1;
-
 `;
 
 export const Description = styled.p`
   font-size: 18px;
   line-height: 1.6;
   color: rgb(161, 163, 170);
-	margin-top: -45px;
 	margin-bottom: 20px;
 `;
 
