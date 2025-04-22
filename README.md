@@ -1,12 +1,17 @@
 # Clash Royale Frontend - Análise de Dados das Partidas
 
-![banner-clash](https://github.com/user-attachments/assets/f1a65eca-29d4-434d-b7c7-1fb1de67eb5f)
+<a href="https://clash-royale-ggstats.vercel.app/batalhas" target="_blank">
+    <img src="https://github.com/user-attachments/assets/f1a65eca-29d4-434d-b7c7-1fb1de67eb5f">
+</a>
+
 
 Este projeto frontend, desenvolvido em React, consome API que realiza consultas e análises estatísticas das batalhas dos 100 melhores jogadores da temporada de Fevereiro a Março. Atravéz da API do Clash Royale extraimos diversos tipos de dados, salvamos estes dados em sua forma bruta em um Data Lake, manipulamos, tratamos, limpamos e reorganizamos os dados em um novo Banco de Dados inserido no MongoDB.
 
+Link da aplicação: https://clash-royale-ggstats.vercel.app/batalhas
+
 A API utilizada para acessar o banco de dados e realizar as consultas está disponível no seguinte repositório: https://github.com/devAugustoW/api_clash_royale/tree/main
 
-## Estatísticas gerais das Batalhas
+## Estatísticas gerais das Batalhas 
 
 <br>
 
